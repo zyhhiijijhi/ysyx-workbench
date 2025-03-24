@@ -23,9 +23,33 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+
+
 void isa_reg_display() {
+  for (int i = 0; i <sizeof(regs)/sizeof(regs[0]); i++)
+  {
+    bool success=true;
+    word_t value=isa_reg_str2val(regs[i],&success);
+    if (!success)
+    {
+      printf("reg:%s out value erro\n",regs[i]);
+    }else{
+      printf("reg:%s,value:%u\n",regs[i],value);
+    }
+    
+  }
+  
 }
 
+
 word_t isa_reg_str2val(const char *s, bool *success) {
+  extern CPU_state cpu;
+  *success=false;
+  if (strcmp(s,"pc")==0)
+  {
+    *success=true;
+    return cpu.pc;
+  }
+  
   return 0;
 }

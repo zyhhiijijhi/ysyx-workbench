@@ -39,7 +39,7 @@ run: run-env
 	$(info IMG: $(IMG))
 	$(info NEMU_EXEC command: $(NEMU_EXEC))
 	$(call git_commit, "run NEMU")
-	$(NEMU_EXEC)||true
+	$(NEMU_EXEC)
 
 gdb: run-env
 	$(call git_commit, "gdb NEMU")

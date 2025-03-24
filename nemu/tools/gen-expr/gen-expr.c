@@ -31,9 +31,78 @@ static char *code_format =
 "  return 0; "
 "}";
 
-static void gen_rand_expr() {
-  buf[0] = '\0';
+static int buf_pos=0; //当前缓冲区的位置
+static int expr_depth=0; //表达式深度
+static int MAX_DEPTH=10;//最大的深度
+
+static uint32_t choose(uint32_t n){
+  return rand()%n;
 }
+//向buf添加字符
+static void append_to_buf(const char *str){
+  if (buf_pos+strlen(str)<sizeof(buf)-1)
+  {
+    strcat(buf,str);
+    buf_pos+=strlen(str);
+  }
+  
+}
+
+//生成随机数
+static void gen_num(int avoid_zero){
+  char num[12];
+  unsigned value=rand()%100;
+  if(avoid_zero || value==0) value=1; //避免除0
+  sprintf(num,"%u",value);
+  append_to_buf(num);
+}
+
+
+//生成随机操作符
+static char gen_rand_op(){
+  static const char ops[]="+-*/";
+  return ops[choose(4)];
+}
+
+static void gen_rand_expr() {
+
+  if (buf_pos>60000)
+  {
+    return; //防止缓冲区溢出
+  }
+  if (expr_depth>=MAX_DEPTH){
+    gen_num(0);
+    return;
+  }
+  expr_depth++;
+  switch (choose(3))
+  {
+  case 0: //生成随机数
+    gen_num(0);
+    break;
+  case 1://生成一个括号表达式
+  append_to_buf("(");
+  gen_rand_expr();
+  append_to_buf(")");
+  break;
+  
+  default: //生成二元运算表达式
+    gen_rand_expr();
+    char op=gen_rand_op();
+    append_to_buf(" ");
+    append_to_buf(&op);
+    append_to_buf(" ");
+    if (op == '/')
+    {
+      gen_num(1);
+    }else{
+      gen_rand_expr();
+    }
+    break;
+  }
+  expr_depth--;
+}
+
 
 int main(int argc, char *argv[]) {
   int seed = time(0);
@@ -44,7 +113,9 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
-    gen_rand_expr();
+      buf[0]='\0';
+      buf_pos=0;
+      gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
 

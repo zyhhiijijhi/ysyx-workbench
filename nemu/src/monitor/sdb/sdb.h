@@ -18,6 +18,11 @@
 
 #include <common.h>
 
-word_t expr(char *e, bool *success);
-
+int expr(char *e, bool *success);
+void create_wp(char *expr);
+void check_wp();
+void delete_wp(int NO);
+void print_wp();
+//static bool make_token(char *e);
+// bool make_token(char *e); 
 #endif

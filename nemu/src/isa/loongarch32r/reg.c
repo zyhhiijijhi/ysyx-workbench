@@ -23,9 +23,25 @@ const char *regs[] = {
   "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"
 };
 
-void isa_reg_display() {
-}
-
 word_t isa_reg_str2val(const char *s, bool *success) {
   return 0;
 }
+
+void isa_reg_display() {
+  for (int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++)
+  {
+    //输出寄存器同时输出寄存器的值
+    bool success;
+    word_t value=isa_reg_str2val(regs[i],&success);
+    if (!success)
+    {
+      printf("reg:%s out value error",regs[i]);
+    }else{
+      printf("reg:%s value:%u",regs[i],value);
+    }
+    
+  }
+  
+}
+
+
