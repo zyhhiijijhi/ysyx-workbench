@@ -40,5 +40,11 @@ endef
 
 _default:
 	@echo "Please run 'make' under subprojects."
+	
+submit:
+	@git add .
+	@git commit -m "Submit PA1 - $(STUID) $(STUNAME)"
+	@git push origin $(WORK_BRANCH)
+
 
 .PHONY: .git_commit .clean_index _default
